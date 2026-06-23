@@ -10,6 +10,11 @@ Proof-of-concept web app for checking alcohol label images against structured TT
 - Storage: none. Each request is self-contained.
 - Secrets: environment variables only. No API keys are committed.
 
+## Live Demo
+
+- Backend: https://ttb-label-verification-api-zgnb.onrender.com
+- Frontend: https://frontend-p3sgnpbn9-mach-tino.vercel.app
+
 ## Comparison Rules
 
 - Brand name, class/type, producer: normalized fuzzy match at threshold `0.90`.
@@ -86,20 +91,23 @@ Render backend:
 
 1. Create a Render Blueprint from this repository.
 2. Render will use `render.yaml`.
-3. Set `OPENAI_API_KEY` as a secret environment variable.
-4. Set `FRONTEND_ORIGINS` to the deployed Vercel URL.
-5. Confirm `GET /health` returns `{"status":"ok","service":"ttb-label-verification-api"}`.
+3. Set `OPENAI_API_KEY` as a secret environment variable in Render only.
+4. Keep `PYTHON_VERSION=3.13.5` so Render does not default to Python 3.14.
+5. Set `FRONTEND_ORIGINS` to the deployed Vercel URL if you use a custom frontend domain.
+6. Confirm `GET /health` returns `{"status":"ok","service":"ttb-label-verification-api"}`.
 
 Vercel frontend:
 
 1. Deploy the `frontend` directory.
-2. Set `API_BASE_URL` to the Render backend URL before the Vercel build.
+2. Set `API_BASE_URL=https://ttb-label-verification-api-zgnb.onrender.com` before the Vercel build.
 3. Confirm the Vercel page shows `OK - API connected`.
 
-Live URLs:
+Secret placement:
 
-- Backend: add the Render URL after Blueprint deployment.
-- Frontend: add the Vercel URL after deployment.
+- Render gets `OPENAI_API_KEY`.
+- Vercel gets `API_BASE_URL`.
+- Local development can use `.env`.
+- Never put an OpenAI API key in Vercel, GitHub, README, `.env.example`, `render.yaml`, or chat.
 
 ## Submission Audit
 
@@ -125,5 +133,4 @@ Expected audit result:
 - The frontend is intentionally plain HTML/CSS/JS for simple hosting and review.
 - Batch concurrency is bounded with `BATCH_CONCURRENCY` to reduce rate and cost pressure.
 - Government-warning OCR/model mistakes intentionally return `NEEDS_REVIEW` and surface extracted text for manual inspection.
-- This environment does not have the Render CLI, so Render deployment must be completed through the Render Blueprint flow.
-
+- Render CLI and Vercel CLI can be used for redeploys after initial account setup.
