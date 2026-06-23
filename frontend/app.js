@@ -84,16 +84,13 @@ window.addEventListener("beforeunload", () => {
 });
 
 async function checkHealth() {
-  const target = document.getElementById("healthStatus");
   try {
     const response = await fetch(`${API_BASE_URL}/health`);
     if (!response.ok) throw new Error("API returned an error");
     await response.json();
-    target.textContent = "Backend online";
-    target.className = "api-status ok";
+    document.documentElement.dataset.service = "ready";
   } catch (error) {
-    target.textContent = "Backend unavailable";
-    target.className = "api-status error";
+    document.documentElement.dataset.service = "unavailable";
   }
 }
 
@@ -172,7 +169,7 @@ singleForm.addEventListener("submit", async (event) => {
   const loading = document.getElementById("singleLoading");
   const button = document.getElementById("verifyButton");
   hideMessage(error);
-  showMessage(loading, "Reading the image and checking the fields. This may take a moment.");
+  showMessage(loading, "Reading the label and comparing the application record.");
   resultsView.hidden = true;
   button.disabled = true;
   button.textContent = "Verifying...";
@@ -200,7 +197,7 @@ singleForm.addEventListener("submit", async (event) => {
   } finally {
     hideMessage(loading);
     button.disabled = false;
-    button.textContent = "Verify Label";
+    button.textContent = "Verify label";
   }
 });
 
@@ -238,10 +235,10 @@ batchForm.addEventListener("submit", async (event) => {
   const progress = document.getElementById("batchProgress");
   const button = document.getElementById("batchSubmitButton");
   hideMessage(error);
-  showMessage(progress, "Reading the label images and checking each record.");
+  showMessage(progress, "Reading the labels and comparing each application record.");
   batchResultsView.hidden = true;
   button.disabled = true;
-  button.textContent = "Verifying Batch...";
+  button.textContent = "Verifying batch...";
 
   try {
     const rows = [...batchRows.children];
@@ -267,7 +264,7 @@ batchForm.addEventListener("submit", async (event) => {
   } finally {
     hideMessage(progress);
     button.disabled = false;
-    button.textContent = "Verify Batch";
+    button.textContent = "Verify batch";
   }
 });
 

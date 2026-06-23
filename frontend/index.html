@@ -10,11 +10,10 @@
     <header class="site-header">
       <div class="site-header-inner">
         <div>
-          <p class="agency-label">Alcohol Label Review</p>
+          <p class="agency-label">Label Review</p>
           <h1 id="title">TTB Label Verification</h1>
-          <p class="summary">Choose a label image and enter the expected application information.</p>
+          <p class="summary">Upload a label and compare it against the application record.</p>
         </div>
-        <div class="api-status checking" id="healthStatus" role="status">Checking backend...</div>
       </div>
     </header>
 
@@ -29,7 +28,7 @@
             aria-selected="true"
             aria-controls="singleView"
           >
-            Single Label
+            Single label
           </button>
           <button
             class="tab mode-tab"
@@ -39,7 +38,7 @@
             aria-selected="false"
             aria-controls="batchView"
           >
-            Batch
+            Batch review
           </button>
         </nav>
 
@@ -48,9 +47,9 @@
 
           <div class="verification-layout">
             <section class="form-section image-section" aria-labelledby="imageHeading">
-              <h2 id="imageHeading">Label Image</h2>
+              <h2 id="imageHeading">Upload label</h2>
               <label class="file-control" for="image">
-                <span class="file-label">Choose Label Image</span>
+                <span class="file-label">Choose label image</span>
                 <input id="image" name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
               </label>
               <div id="imagePreviewWrap" class="image-preview-wrap" hidden>
@@ -60,22 +59,22 @@
             </section>
 
             <section class="form-section fields-section" aria-labelledby="fieldsHeading">
-              <h2 id="fieldsHeading">Expected Application Information</h2>
+              <h2 id="fieldsHeading">Application record</h2>
               <div class="field-grid">
                 <div class="field">
-                  <label for="brandName">Brand Name</label>
+                  <label for="brandName">Brand name</label>
                   <input id="brandName" name="brand_name" type="text" autocomplete="off" required />
                 </div>
                 <div class="field">
-                  <label for="classType">Class / Type</label>
+                  <label for="classType">Class / type</label>
                   <input id="classType" name="class_type" type="text" autocomplete="off" required />
                 </div>
                 <div class="field">
-                  <label for="abv">Alcohol By Volume</label>
+                  <label for="abv">Alcohol by volume</label>
                   <input id="abv" name="abv" type="text" autocomplete="off" placeholder="45%" required />
                 </div>
                 <div class="field">
-                  <label for="netContents">Net Contents</label>
+                  <label for="netContents">Net contents</label>
                   <input id="netContents" name="net_contents" type="text" autocomplete="off" placeholder="750 mL" required />
                 </div>
                 <div class="field">
@@ -83,11 +82,11 @@
                   <input id="producer" name="producer" type="text" autocomplete="off" required />
                 </div>
                 <div class="field">
-                  <label for="countryOfOrigin">Country of Origin</label>
+                  <label for="countryOfOrigin">Country of origin</label>
                   <input id="countryOfOrigin" name="country_of_origin" type="text" autocomplete="off" required />
                 </div>
                 <div class="field field-full">
-                  <label for="governmentWarning">Government Warning</label>
+                  <label for="governmentWarning">Government warning</label>
                   <textarea id="governmentWarning" name="government_warning" rows="5" required></textarea>
                 </div>
               </div>
@@ -98,25 +97,25 @@
             Reading the image and checking the fields. This may take a moment.
           </div>
 
-          <button id="verifyButton" class="primary-button" type="submit">Verify Label</button>
+          <button id="verifyButton" class="primary-button" type="submit">Verify label</button>
         </form>
 
         <form id="batchView" class="view mode-panel" aria-describedby="batchError" hidden novalidate>
           <div id="batchError" class="form-error" role="alert" hidden></div>
           <div id="batchRows" class="batch-rows"></div>
-          <button id="addBatchRow" class="secondary-button compact" type="button">Add Another Label</button>
+          <button id="addBatchRow" class="secondary-button compact" type="button">Add another label</button>
           <div id="batchProgress" class="loading-message" role="status" hidden></div>
-          <button id="batchSubmitButton" class="primary-button" type="submit">Verify Batch</button>
+          <button id="batchSubmitButton" class="primary-button" type="submit">Verify batch</button>
         </form>
 
         <section id="resultsView" class="results-view" aria-labelledby="resultsHeading" hidden>
           <div id="singleVerdict" class="verdict-banner neutral">
-            <p class="verdict-label">Result</p>
+            <p class="verdict-label">Review result</p>
             <h2 id="resultsHeading">Ready to review</h2>
             <p id="singleLatency">Submit a label to see field-by-field results.</p>
           </div>
           <div id="singleResults" class="result-list"></div>
-          <button id="resetButton" class="secondary-button" type="button">Check Another Label</button>
+          <button id="resetButton" class="secondary-button" type="button">Review another label</button>
         </section>
 
         <section id="batchResultsView" class="results-view" aria-labelledby="batchResultsHeading" hidden>
@@ -141,23 +140,23 @@
         <div class="batch-row-body">
           <section class="form-section image-section" aria-label="Batch label image">
             <label class="file-control">
-              <span class="file-label">Label Image</span>
+              <span class="file-label">Label image</span>
               <input name="batch_image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
             </label>
             <label>
-              <span>Label Name</span>
+              <span>Label name</span>
               <input name="item_id" autocomplete="off" placeholder="Label 1" />
             </label>
           </section>
           <section class="form-section fields-section" aria-label="Batch application information">
             <div class="field-grid">
-              <label class="field">Brand Name<input name="brand_name" autocomplete="off" required /></label>
-              <label class="field">Class / Type<input name="class_type" autocomplete="off" required /></label>
-              <label class="field">Alcohol By Volume<input name="abv" autocomplete="off" required /></label>
-              <label class="field">Net Contents<input name="net_contents" autocomplete="off" required /></label>
+              <label class="field">Brand name<input name="brand_name" autocomplete="off" required /></label>
+              <label class="field">Class / type<input name="class_type" autocomplete="off" required /></label>
+              <label class="field">Alcohol by volume<input name="abv" autocomplete="off" required /></label>
+              <label class="field">Net contents<input name="net_contents" autocomplete="off" required /></label>
               <label class="field">Producer<input name="producer" autocomplete="off" required /></label>
-              <label class="field">Country of Origin<input name="country_of_origin" autocomplete="off" required /></label>
-              <label class="field field-full">Government Warning<textarea name="government_warning" rows="4" required></textarea></label>
+              <label class="field">Country of origin<input name="country_of_origin" autocomplete="off" required /></label>
+              <label class="field field-full">Government warning<textarea name="government_warning" rows="4" required></textarea></label>
             </div>
           </section>
         </div>
