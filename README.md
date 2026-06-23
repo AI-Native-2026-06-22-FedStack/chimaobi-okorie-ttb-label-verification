@@ -6,7 +6,7 @@ Proof-of-concept web app for checking alcohol label images against structured TT
 
 Public repo: [https://github.com/AI-Native-2026-06-22-FedStack/chimaobi-okorie-ttb-label-verification](https://github.com/AI-Native-2026-06-22-FedStack/chimaobi-okorie-ttb-label-verification)
 
-Live frontend: [https://frontend-p3sgnpbn9-mach-tino.vercel.app/](https://frontend-p3sgnpbn9-mach-tino.vercel.app/)
+Live frontend: [https://ttb-label-verification-frontend-zgnb.vercel.app/](https://ttb-label-verification-frontend-zgnb.vercel.app/)
 
 Backend API: [https://ttb-label-verification-api-zgnb.onrender.com](https://ttb-label-verification-api-zgnb.onrender.com)
 
