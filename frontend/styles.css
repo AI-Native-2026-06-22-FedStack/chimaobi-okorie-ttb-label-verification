@@ -84,6 +84,33 @@ h2 {
   color: var(--fail);
 }
 
+.tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 22px clamp(18px, 4vw, 56px) 0;
+}
+
+.tab {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
@@ -137,7 +164,8 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-.fields {
+.fields,
+.batch-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
@@ -172,6 +200,41 @@ button:disabled {
   width: 100%;
   background: var(--accent);
   color: white;
+}
+
+.secondary {
+  background: white;
+  color: var(--accent-dark);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.batch-rows {
+  display: grid;
+  gap: 16px;
+}
+
+.batch-row {
+  margin: 0;
+  border: 1px solid var(--line);
+  padding: 18px;
+}
+
+.batch-row legend {
+  padding: 0 8px;
+  font-weight: 950;
+}
+
+.remove {
+  grid-column: 1 / -1;
+  background: white;
+  border-color: var(--fail);
+  color: var(--fail);
 }
 
 .verdict {
@@ -209,6 +272,11 @@ button:disabled {
   padding: 15px 0;
 }
 
+.batch-result {
+  border-top: 1px solid var(--line);
+  padding: 15px 0;
+}
+
 .result-title {
   display: flex;
   justify-content: space-between;
@@ -242,6 +310,48 @@ button:disabled {
   color: var(--muted);
 }
 
+.detail-toggle {
+  width: auto;
+  min-height: 42px;
+  margin-top: 12px;
+}
+
+.nested {
+  margin-top: 10px;
+  border-left: 3px solid var(--line);
+  padding-left: 14px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.summary div {
+  padding: 14px;
+  border-right: 1px solid var(--line);
+}
+
+.summary div:last-child {
+  border-right: 0;
+}
+
+.summary strong,
+.summary span {
+  display: block;
+}
+
+.summary strong {
+  font-size: 2rem;
+}
+
+.summary span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .diff {
   display: grid;
   gap: 6px;
@@ -253,7 +363,9 @@ button:disabled {
 @media (max-width: 900px) {
   .topbar,
   .workspace,
-  .fields {
+  .fields,
+  .batch-row,
+  .actions {
     grid-template-columns: 1fr;
   }
 
@@ -262,4 +374,3 @@ button:disabled {
     align-items: start;
   }
 }
-

@@ -10,49 +10,101 @@
     <header class="topbar">
       <div>
         <p class="eyebrow">TTB Label Verification</p>
-        <h1>Check one label.</h1>
+        <h1>Check labels.</h1>
       </div>
       <div class="api-status" id="healthStatus" role="status">Checking API...</div>
     </header>
 
-    <main class="workspace">
-      <form id="singleForm" class="input-panel" aria-describedby="singleError">
-        <div class="section-heading">
-          <h2>Application data</h2>
-          <p>Enter the approved values and choose the label image.</p>
+    <main>
+      <nav class="tabs" aria-label="Verification mode">
+        <button class="tab active" data-view="single" type="button">Single label</button>
+        <button class="tab" data-view="batch" type="button">Batch upload</button>
+      </nav>
+
+      <section class="view active" id="singleView" aria-labelledby="singleHeading">
+        <div class="workspace">
+          <form id="singleForm" class="input-panel" aria-describedby="singleError">
+            <div class="section-heading">
+              <h2 id="singleHeading">Application data</h2>
+              <p>Enter the approved values and choose the label image.</p>
+            </div>
+
+            <label class="file-picker">
+              <span>Label image</span>
+              <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" required />
+            </label>
+
+            <div class="fields">
+              <label>Brand name<input name="brand_name" autocomplete="off" required /></label>
+              <label>Class or type<input name="class_type" autocomplete="off" required /></label>
+              <label>Alcohol content<input name="abv" autocomplete="off" placeholder="45%" required /></label>
+              <label>Net contents<input name="net_contents" autocomplete="off" placeholder="750 mL" required /></label>
+              <label>Producer<input name="producer" autocomplete="off" required /></label>
+              <label>Country of origin<input name="country_of_origin" autocomplete="off" required /></label>
+              <label class="wide">Government warning<textarea name="government_warning" rows="5" required></textarea></label>
+            </div>
+
+            <p class="form-error" id="singleError" role="alert"></p>
+            <button class="primary" type="submit">Verify label</button>
+          </form>
+
+          <section class="result-panel" aria-live="polite">
+            <div class="section-heading">
+              <h2>Result</h2>
+              <p id="singleLatency">No check has run yet.</p>
+            </div>
+            <div id="singleVerdict" class="verdict neutral">Waiting</div>
+            <div id="singleResults" class="result-list"></div>
+          </section>
         </div>
+      </section>
 
-        <label class="file-picker">
-          <span>Label image</span>
-          <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" required />
-        </label>
+      <section class="view" id="batchView" aria-labelledby="batchHeading">
+        <div class="workspace">
+          <form id="batchForm" class="input-panel" aria-describedby="batchError">
+            <div class="section-heading">
+              <h2 id="batchHeading">Batch labels</h2>
+              <p>Add one row per label. Each row needs an image and matching application values.</p>
+            </div>
+            <div id="batchRows" class="batch-rows"></div>
+            <div class="actions">
+              <button class="secondary" id="addBatchRow" type="button">Add row</button>
+              <button class="primary" type="submit">Verify batch</button>
+            </div>
+            <p class="form-error" id="batchError" role="alert"></p>
+          </form>
 
-        <div class="fields">
-          <label>Brand name<input name="brand_name" autocomplete="off" required /></label>
-          <label>Class or type<input name="class_type" autocomplete="off" required /></label>
-          <label>Alcohol content<input name="abv" autocomplete="off" placeholder="45%" required /></label>
-          <label>Net contents<input name="net_contents" autocomplete="off" placeholder="750 mL" required /></label>
-          <label>Producer<input name="producer" autocomplete="off" required /></label>
-          <label>Country of origin<input name="country_of_origin" autocomplete="off" required /></label>
-          <label class="wide">
-            Government warning
-            <textarea name="government_warning" rows="5" required></textarea>
-          </label>
+          <section class="result-panel" aria-live="polite">
+            <div class="section-heading">
+              <h2>Batch summary</h2>
+              <p id="batchProgress">No batch has run yet.</p>
+            </div>
+            <div class="summary">
+              <div><strong id="passedCount">0</strong><span>Approved</span></div>
+              <div><strong id="reviewCount">0</strong><span>Needs review</span></div>
+              <div><strong id="totalCount">0</strong><span>Total</span></div>
+            </div>
+            <div id="batchResults" class="result-list"></div>
+          </section>
         </div>
-
-        <p class="form-error" id="singleError" role="alert"></p>
-        <button class="primary" type="submit">Verify label</button>
-      </form>
-
-      <section class="result-panel" aria-live="polite">
-        <div class="section-heading">
-          <h2>Result</h2>
-          <p id="singleLatency">No check has run yet.</p>
-        </div>
-        <div id="singleVerdict" class="verdict neutral">Waiting</div>
-        <div id="singleResults" class="result-list"></div>
       </section>
     </main>
+
+    <template id="batchRowTemplate">
+      <fieldset class="batch-row">
+        <legend>Label</legend>
+        <label>Label name<input name="item_id" autocomplete="off" placeholder="Label 1" /></label>
+        <label>Image<input name="batch_image" type="file" accept="image/png,image/jpeg,image/webp" required /></label>
+        <label>Brand name<input name="brand_name" autocomplete="off" required /></label>
+        <label>Class or type<input name="class_type" autocomplete="off" required /></label>
+        <label>Alcohol content<input name="abv" autocomplete="off" required /></label>
+        <label>Net contents<input name="net_contents" autocomplete="off" required /></label>
+        <label>Producer<input name="producer" autocomplete="off" required /></label>
+        <label>Country of origin<input name="country_of_origin" autocomplete="off" required /></label>
+        <label class="wide">Government warning<textarea name="government_warning" rows="4" required></textarea></label>
+        <button class="remove" type="button">Remove row</button>
+      </fieldset>
+    </template>
 
     <script src="config.js"></script>
     <script src="app.js"></script>

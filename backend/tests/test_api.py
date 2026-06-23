@@ -99,3 +99,62 @@ def test_verify_rejects_malformed_application_json_readably():
     assert response.status_code == 400
     assert "Invalid application data" in response.json()["detail"]
 
+
+def test_batch_processes_three_labels_and_summarizes():
+    client = client_with_fake(extracted())
+    items = [
+        {"id": "A", "application_data": application_data()},
+        {"id": "B", "application_data": application_data()},
+        {"id": "C", "application_data": application_data()},
+    ]
+    response = client.post(
+        "/verify/batch",
+        data={"items": json.dumps(items)},
+        files=[
+            ("images", ("a.png", image_bytes(), "image/png")),
+            ("images", ("b.png", image_bytes(), "image/png")),
+            ("images", ("c.png", image_bytes(), "image/png")),
+        ],
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["summary"] == {"passed": 3, "needs_review": 0, "total": 3}
+    assert len(payload["items"]) == 3
+
+
+def test_batch_isolates_one_bad_item():
+    client = client_with_fake(extracted())
+    bad_data = application_data()
+    bad_data["brand_name"] = ""
+    items = [
+        {"id": "A", "application_data": application_data()},
+        {"id": "B", "application_data": bad_data},
+        {"id": "C", "application_data": application_data()},
+    ]
+    response = client.post(
+        "/verify/batch",
+        data={"items": json.dumps(items)},
+        files=[
+            ("images", ("a.png", image_bytes(), "image/png")),
+            ("images", ("b.png", image_bytes(), "image/png")),
+            ("images", ("c.png", image_bytes(), "image/png")),
+        ],
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["summary"] == {"passed": 2, "needs_review": 1, "total": 3}
+    assert payload["items"][1]["error"]
+
+
+def test_batch_mismatched_counts_returns_readable_error():
+    client = client_with_fake(extracted())
+    response = client.post(
+        "/verify/batch",
+        data={"items": json.dumps([{"id": "A", "application_data": application_data()}])},
+        files=[
+            ("images", ("a.png", image_bytes(), "image/png")),
+            ("images", ("b.png", image_bytes(), "image/png")),
+        ],
+    )
+    assert response.status_code == 400
+    assert "data item" in response.json()["detail"]
