@@ -8,7 +8,7 @@ from PIL import Image
 
 from app.main import app
 from app.models import CANONICAL_GOVERNMENT_WARNING, ExtractedLabel
-from app.vision import FakeVisionService
+from app.vision import FakeVisionService, VisionError
 
 
 def image_bytes() -> bytes:
@@ -100,6 +100,42 @@ def test_verify_rejects_malformed_application_json_readably():
     assert "Invalid application data" in response.json()["detail"]
 
 
+def test_verify_vision_error_returns_readable_422():
+    app.state.vision_service = FakeVisionService(error=VisionError("Image is too blurry to read."))
+    client = TestClient(app)
+    response = client.post(
+        "/verify",
+        data={"application_data": json.dumps(application_data())},
+        files={"image": ("label.png", image_bytes(), "image/png")},
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Image is too blurry to read."
+
+
+def test_partial_extraction_degrades_to_needs_review_without_crashing():
+    client = client_with_fake(ExtractedLabel(raw_text="glared bottle", extraction_confidence=0.2))
+    response = client.post(
+        "/verify",
+        data={"application_data": json.dumps(application_data())},
+        files={"image": ("label.png", image_bytes(), "image/png")},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["overall_verdict"] == "NEEDS_REVIEW"
+    assert all(item["status"] == "FAIL" for item in payload["results"])
+
+
+def test_mocked_single_label_latency_is_under_five_seconds():
+    client = client_with_fake(extracted())
+    response = client.post(
+        "/verify",
+        data={"application_data": json.dumps(application_data())},
+        files={"image": ("label.png", image_bytes(), "image/png")},
+    )
+    assert response.status_code == 200
+    assert response.json()["latency_ms"] < 5000
+
+
 def test_batch_processes_three_labels_and_summarizes():
     client = client_with_fake(extracted())
     items = [
@@ -158,3 +194,14 @@ def test_batch_mismatched_counts_returns_readable_error():
     )
     assert response.status_code == 400
     assert "data item" in response.json()["detail"]
+
+
+def test_batch_rejects_invalid_items_json_readably():
+    client = client_with_fake(extracted())
+    response = client.post(
+        "/verify/batch",
+        data={"items": "{not-json"},
+        files=[("images", ("a.png", image_bytes(), "image/png"))],
+    )
+    assert response.status_code == 400
+    assert "valid JSON" in response.json()["detail"]

@@ -17,8 +17,8 @@
 
     <main>
       <nav class="tabs" aria-label="Verification mode">
-        <button class="tab active" data-view="single" type="button">Single label</button>
-        <button class="tab" data-view="batch" type="button">Batch upload</button>
+        <button class="tab active" data-view="single" type="button" aria-controls="singleView">Single label</button>
+        <button class="tab" data-view="batch" type="button" aria-controls="batchView">Batch upload</button>
       </nav>
 
       <section class="view active" id="singleView" aria-labelledby="singleHeading">
@@ -102,7 +102,7 @@
         <label>Producer<input name="producer" autocomplete="off" required /></label>
         <label>Country of origin<input name="country_of_origin" autocomplete="off" required /></label>
         <label class="wide">Government warning<textarea name="government_warning" rows="4" required></textarea></label>
-        <button class="remove" type="button">Remove row</button>
+        <button class="remove" type="button" aria-label="Remove this batch row">Remove row</button>
       </fieldset>
     </template>
 
